@@ -45,8 +45,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun getResponse(question: String, callback: (String) -> Unit){
-        val apikey = "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"
-        val url = "https://api.openai.com/v1/completions"
+        val apikey = "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"
+        val url = "https://api.openai.com/v1/engines/text-davinci-003/completions"
 
         val requestBody="""
             {
@@ -71,16 +71,18 @@ class MainActivity : AppCompatActivity() {
             override fun onResponse(call: Call, response: Response) {
                 val body = response.body?.string()
                 if (body != null) {
-                    Log.v("data", body)
+                    Log.v("response", body)
+                    try {
+                        val jsonObject = JSONObject(body)
+                        val jsonArray: JSONArray = jsonObject.getJSONArray("choices")
+                        val textResult = jsonArray.getJSONObject(0).getString("text")
+                        callback(textResult)
+                    } catch (e: Exception) {
+                        Log.e("error", "JSON parsing error: ${e.message}")
+                    }
+                } else {
+                    Log.v("response", "empty")
                 }
-                else {
-                    Log.v("data", "empty")
-                }
-
-                var jsonObject = JSONObject(body)
-                val jsonArray: JSONArray = jsonObject.getJSONArray("choices")
-                val textResult = jsonArray.getJSONObject(0).getString("text")
-                callback(textResult)
 
             }
          })
