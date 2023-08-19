@@ -6,7 +6,14 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
+import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
 
@@ -37,5 +44,34 @@ class MainActivity : AppCompatActivity() {
     fun getResponse(question: String, callback: (String) -> Unit){
         val apikey = "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"
         val url = "https://api.openai.com/v1/completions"
+
+        val requestBody="""
+            {
+            "model": "text-davinci-003",
+            "prompt": "$question",
+            "max_tokens": 7,
+            "temperature": 0
+            }
+        """.trimIndent()
+
+        val request = Request.Builder()
+            .url(url)
+            .addHeader("Content-Type", "application/json")
+            .addHeader("Authorization", "Bearer $apikey")
+            .post(requestBody.toRequestBody("application/json".toMediaTypeOrNull()))
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                TODO("Not yet implemented")
+            }
+        }
+        }
+
+
     }
 }
