@@ -2,6 +2,7 @@ package com.example.openapi
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -47,9 +48,8 @@ class MainActivity : AppCompatActivity() {
 
         val requestBody="""
             {
-            "model": "text-davinci-003",
             "prompt": "$question",
-            "max_tokens": 7,
+            "max_tokens": 500,
             "temperature": 0
             }
         """.trimIndent()
@@ -63,15 +63,18 @@ class MainActivity : AppCompatActivity() {
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                TODO("Not yet implemented")
+                Log.e("error","API Failed")
             }
 
             override fun onResponse(call: Call, response: Response) {
-                TODO("Not yet implemented")
+                val body = response.body?.string()
+                if (body != null) {
+                    Log.v("data", body)
+                }
+                else {
+                    Log.v("data", "empty")
+                }
             }
-        }
-        }
-
-
+         })
     }
 }
