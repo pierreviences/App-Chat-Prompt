@@ -14,6 +14,8 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
+import org.json.JSONArray
+import org.json.JSONObject
 import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
@@ -74,6 +76,12 @@ class MainActivity : AppCompatActivity() {
                 else {
                     Log.v("data", "empty")
                 }
+
+                var jsonObject = JSONObject(body)
+                val jsonArray: JSONArray = jsonObject.getJSONArray("choices")
+                val textResult = jsonArray.getJSONObject(0).getString("text")
+                callback(textResult)
+
             }
          })
     }
